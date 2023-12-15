@@ -13,9 +13,21 @@ void yyerror(const char *s);
     char *str;
 }
 
+%token STRCPY
+%token GETS
+%token MEMCPY
+%token INT
+%token EOF
+%token TAB
+
+%token <str> WORD
+%token <str> ANY
+
+%start S
 %%
 
-
+S: 
+;
 
 %%
 
