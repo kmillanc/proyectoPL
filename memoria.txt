@@ -1,0 +1,30 @@
+/*****************************************************************************************************************
+
+- GUIÓN:
+Este fichero de explicación deberá especificar el nombre de los miembros del grupo o del
+estudiante (si el proyecto es individual), los objetivos de la práctica, los ficheros que la
+componen, las instrucciones de compilación/ejecución, descripción del analizador léxico y
+sintáctico, tratamiento de errores, y cualquier otra aclaración o comentario que se considere
+necesario (detalles sobre la gramática, problemas encontrados, etc.).
+
+*****************************************************************************************************************/
+
+Proyecto final - Procesamiento de lenguajes 
+Aut@r: Kevin Millán Canchapoma - k.millancs@udc.es
+Aut@r: Inés Faro Pérez - ines.fperez@udc.es
+
+En este proyecto proponemos la implementación de un analizador léxico y sintáctico que detecte posibles ataques de 
+buffer overflow. Como entrada recibimos un fichero .c y como salida devolvemos un informe que resalte las lineas y 
+las variables que son sobrescritas de manera fraudulenta. Las gramáticas recogerán todas las formas que nuestras 
+variables pueden ser sobrescritas. Junto a otro modulo final que cuenta con un contador podremos diferenciar entre  
+una sobreescritura maliciosa de una correcta.
+
+Los ficheros que componen este proyecto serán un analizador léxico (lexer) que nombramos como "proyecto.l ".
+El lexer reconocerá las variables inicializadas y las funciones como strcpy, get, memcpy...
+Tendremos también un analizador sintáctico (parser) "proyecto.y" que reconocerá la gramática y tratará los errores 
+debidos a un posible ataque, y una carpeta con distintos ejemplos de prueba con ataques de buffer overflow. Tenemos 
+también un Makefile para facilitar la ejecución de nuestro programa desde terminal donde bastaría con ejecutar un 
+make all para compilar el proyecto, un make run para ejecutarlo y un make clear para borrar todos los archivos 
+generados en compilación.
+
+
