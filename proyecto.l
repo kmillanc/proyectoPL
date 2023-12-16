@@ -11,22 +11,22 @@
 strcpy          "strcpy"
 gets            "gets"
 memcpy          "memcpy"
-int             "int"         
-eof             \n
-tab             \t     
+int             "int"       
+char            "char"  
+delim           [ \t\n]+ 
 word            ["\-\/\_\!\&\'a-zA-Z0-9][a-zA-Z0-9\-\>.\!\'\_\/\\\"]* 
 
 /* Seccion de reglas*/
 %%
 
+{delim}         ;
 {strcpy}        { return STRCPY; }
 {gets}          { return GETS; }
 {memcpy}        { return MEMCPY; }
 {int}           { return INT; }
-{eof}           { return EOF }
-{tab}           { return TAB }
+{char}          { return CHAR; }
 {word}          { yylval.str = strdup(yytext); 
                     return WORD; }
-.               { yylval.string=strdup(yytext); 
+.               { yylval.str=strdup(yytext); 
                     return ANY; }
 %%

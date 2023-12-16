@@ -7,6 +7,10 @@ int yylex(void);
 int malicious_overwrite = 0;
 
 void yyerror(const char *s);
+
+extern int yylineno;
+extern void yyclearin;
+
 %}
 
 %union {
@@ -17,17 +21,34 @@ void yyerror(const char *s);
 %token GETS
 %token MEMCPY
 %token INT
-%token EOF
-%token TAB
+%token CHAR
 
 %token <str> WORD
 %token <str> ANY
 
-%start S
 %%
 
-S: 
-;
+program: statements
+       ;
+
+statements: statement
+          | statements statement
+          ;
+
+statement: INT WORD ';'
+         | STRCPY '(' WORD ',' WORD ')' {
+             printf("Potential Buffer Overflow: %s\n", $5);
+             malicious_overwrite++;
+         }
+         | GETS '(' WORD ')' {
+             printf("Potential Buffer Overflow: %s\n", $3);
+             malicious_overwrite++;
+         }
+         | MEMCPY '(' WORD ',' WORD ')' {
+             printf("Potential Buffer Overflow: %s\n", $5);
+             malicious_overwrite++;
+         }
+         ;
 
 %%
 
@@ -38,5 +59,5 @@ int main(int argc, char *argv[]) {
 }
 
 void yyerror (const char *s) { 
-    fprintf(stderr, "Error en la línea %i: %s\n", yylineno, s, malicious_overwrite+1);
+    fprintf(stderr, "Error en la línea %i: %s\n", yylineno, s);
 }

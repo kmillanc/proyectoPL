@@ -3,6 +3,8 @@
 FUENTE = proyecto
 # PRUEBA: nombre fichero de prueba
 PRUEBA = ejemplo.c
+# SALIDA: nombre del fichero de salida
+SALIDA = scan.txt
 # LIB (libreria flex): lfl (gnu/linux, windows); ll (macos)
 LIB = lfl
 
@@ -14,8 +16,8 @@ compile:
 	gcc -o $(FUENTE) lex.yy.c $(FUENTE).tab.c -$(LIB) -ly 
 
 clean:
-	rm $(FUENTE) lex.yy.c $(FUENTE).tab.c $(FUENTE).tab.h
+	rm $(FUENTE) lex.yy.c $(FUENTE).tab.c $(FUENTE).tab.h $(SALIDA)
 
 run:
-	./$(FUENTE) < $(PRUEBA)
+	./$(FUENTE) < $(PRUEBA) > scan.txt
 
