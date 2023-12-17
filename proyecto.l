@@ -8,18 +8,20 @@
 /* Seccion de declaraciones */
 %option yylineno
 
+include         "include"
 strcpy          "strcpy"
 gets            "gets"
 memcpy          "memcpy"
 int             "int"       
 char            "char"  
-delim           [ \t\n]+ 
-word            ["\-\/\_\!\&\'a-zA-Z0-9][a-zA-Z0-9\-\>.\!\'\_\/\\\"]* 
+delim           [ \t\n]+
+word            [a-zA-Z_][a-zA-Z0-9_]*  
 
 /* Seccion de reglas*/
 %%
-
+^#.*            ; 
 {delim}         ;
+{include}\<{word}+\> { yylval.str = strdup(yytext); return HEADER_INCLUDE; }
 {strcpy}        { return STRCPY; }
 {gets}          { return GETS; }
 {memcpy}        { return MEMCPY; }

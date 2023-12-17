@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-int yylex(void); 
+int yylex(); 
 int malicious_overwrite = 0;
 
 void yyerror(const char *s);
@@ -17,6 +17,7 @@ extern void yyclearin;
     char *str;
 }
 
+%token HEADER_INCLUDE
 %token STRCPY
 %token GETS
 %token MEMCPY
@@ -26,29 +27,49 @@ extern void yyclearin;
 %token <str> WORD
 %token <str> ANY
 
+%start S
+
 %%
 
-program: statements
-       ;
+S: statements
+;
 
 statements: statement
           | statements statement
-          ;
+;
 
-statement: INT WORD ';'
-         | STRCPY '(' WORD ',' WORD ')' {
+statement: 
+        HEADER_INCLUDE { printf("Reconoce el include\n"); }
+
+        | INT WORD ';'
+        
+        | INT WORD '[' WORD ']' ';' {
+             printf("Potential Buffer Overflow: %s\n", $2);
+        }
+        
+        | WORD '[' WORD ']' ';' {
+             printf("Potential Buffer Overflow: %s\n", $1);
+         }
+        
+        | WORD '=' WORD ';' {
+             printf("Potential Buffer Overflow: %s\n", $1);
+        }
+        
+        | STRCPY '(' WORD ',' WORD ')' {
              printf("Potential Buffer Overflow: %s\n", $5);
              malicious_overwrite++;
-         }
-         | GETS '(' WORD ')' {
+        }
+        
+        | GETS '(' WORD ')' {
              printf("Potential Buffer Overflow: %s\n", $3);
              malicious_overwrite++;
-         }
-         | MEMCPY '(' WORD ',' WORD ')' {
+        }
+        
+        | MEMCPY '(' WORD ',' WORD ')' {
              printf("Potential Buffer Overflow: %s\n", $5);
              malicious_overwrite++;
-         }
-         ;
+        }
+;
 
 %%
 
