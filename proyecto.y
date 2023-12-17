@@ -61,46 +61,66 @@ statements: statement
 ;
 
 statement: 
-        HEADER_INCLUDE { printf("Reconoce el include\n"); }
+          expression SEMICOLON
+         | declaration SEMICOLON
+         | if_statement
+         | iteration_statement
+;
 
-        | INT WORD ';'
-        
-        | INT WORD '[' WORD ']' ';' {
-             printf("Potential Buffer Overflow: %s\n", $2);
-        }
-        
-        | WORD '[' WORD ']' ';' {
-             printf("Potential Buffer Overflow: %s\n", $1);
-         }
-        
-        | WORD '=' WORD ';' {
-             printf("Potential Buffer Overflow: %s\n", $1);
-        }
-        
-        | STRCPY '(' WORD ',' WORD ')' {
-             printf("Potential Buffer Overflow: %s\n", $5);
-             malicious_overwrite++;
-        }
-        
-        | GETS '(' WORD ')' {
-             printf("Potential Buffer Overflow: %s\n", $3);
-             malicious_overwrite++;
-        }
-        
-        | MEMCPY '(' WORD ',' WORD ')' {
-             printf("Potential Buffer Overflow: %s\n", $5);
-             malicious_overwrite++;
-        }
+declaration: type declarator_list
+;
+
+type: INT
+    | CHAR
+    | INTEGER
+    | VOID
+;
+
+declarator_list: declarator
+              | declarator_list COMMA declarator
+;
+
+declarator: WORD
+          | WORD LPAREN RPAREN
+          | WORD LPAREN parameter_list RPAREN
+; 
+
+parameter_list: parameter_declaration
+          | parameter_list COMMA parameter_declaration
+;
+
+parameter_declaration: type WORD
+;
+
+if_statement: IF LPAREN expression RPAREN LBRACE statement RBRACE
+               | if_statement ELSE LBRACE statement RBRACE
+;
+
+iteration_statement: WHILE LPAREN expression RPAREN statement
+                    | FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statement
+;
+
+expression: WORD
+         | expression EQUALS WORD
+         | expression EQUALS INTEGER
+         | expression EQUALITY WORD
+         | expression EQUALITY INTEGER
+         | expression INEQUALITY WORD
+         | expression INEQUALITY INTEGER
+         | expression LTHAN WORD
+         | expression LTHAN INTEGER 
+         | expression GTHAN WORD
+         | expression GTHAN INTEGER
 ;
 
 %%
 
 int main(int argc, char *argv[]) {
 	yyparse(); 
-    printf("Malicious overwrites detected: %i\n", malicious_overwrite);
+     printf("Malicious overwrites detected: %i\n", malicious_overwrite);
 	return 0;
 }
 
 void yyerror (const char *s) { 
-    fprintf(stderr, "Error en la línea %i: %s\n", yylineno, s);
+     fprintf(stderr, "Error en la línea %i: %s\n", yylineno, s);
 }
