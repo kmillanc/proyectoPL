@@ -8,7 +8,6 @@
 /* Seccion de declaraciones */
 %option yylineno
 
-include         "include"
 strcpy          "strcpy"
 gets            "gets"
 memcpy          "memcpy"
@@ -21,7 +20,6 @@ word            [a-zA-Z_][a-zA-Z0-9_]*
 %%
 ^#.*            ; 
 {delim}         ;
-{include}\<{word}+\> { yylval.str = strdup(yytext); return HEADER_INCLUDE; }
 {strcpy}        { return STRCPY; }
 {gets}          { return GETS; }
 {memcpy}        { return MEMCPY; }

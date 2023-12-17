@@ -16,7 +16,7 @@ Aut@r: Inés Faro Pérez - ines.fperez@udc.es
 En este proyecto proponemos la implementación de un analizador léxico y sintáctico que detecte posibles ataques de 
 buffer overflow. Como entrada recibimos un fichero .c y como salida devolvemos un informe que resalte las lineas y 
 las variables que son sobrescritas de manera fraudulenta. Las gramáticas recogerán todas las formas que nuestras 
-variables pueden ser sobrescritas. Junto a otro modulo final que cuenta con un contador podremos diferenciar entre  
+variables pueden ser sobrescritas. Junto a otro módulo final que cuenta con un contador podremos diferenciar entre  
 una sobreescritura maliciosa de una correcta.
 
 Los ficheros que componen este proyecto serán un analizador léxico (lexer) que nombramos como "proyecto.l ".

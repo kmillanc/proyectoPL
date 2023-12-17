@@ -39,9 +39,7 @@ statements: statement
 ;
 
 statement: 
-        HEADER_INCLUDE { printf("Reconoce el include\n"); }
-
-        | INT WORD ';'
+          INT WORD ';'
         
         | INT WORD '[' WORD ']' ';' {
              printf("Potential Buffer Overflow: %s\n", $2);
