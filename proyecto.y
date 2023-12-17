@@ -75,7 +75,7 @@ statement:
 
 int main(int argc, char *argv[]) {
 	yyparse(); 
-    printf("Malicious overwrites detected:\n");
+    printf("Malicious overwrites detected: %i\n", malicious_overwrite);
 	return 0;
 }
 
