@@ -10,7 +10,7 @@ necesario (detalles sobre la gramática, problemas encontrados, etc.).
 *****************************************************************************************************************/
 
 Proyecto final - Procesamiento de lenguajes 
-Aut@r: Kevin Millán Canchapoma - k.millancs@udc.es
+Aut@r: Kevin Millán Canchapoma - k.millanc@udc.es
 Aut@r: Inés Faro Pérez - ines.fperez@udc.es
 
 En este proyecto proponemos la implementación de un analizador léxico y sintáctico que detecte posibles ataques de 
