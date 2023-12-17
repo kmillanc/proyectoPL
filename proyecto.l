@@ -19,33 +19,39 @@ lbrace          \{
 rbrace          \}
 lparent         \(
 rparent         \)
-comma           ','
-semicolon       ';'
-equals          '='
-equality        "=="
-inequality      "!="
-lthan           '<'
-gthan           '>'
-plus            '+'
-minus           '-'
-multiply        '*'
+lbracket        \[
+rbracket        \]
+comma           \,
+semicolon       \;
+quotesIn        \"
+quotesEnd       \"
+quotedstring    {quotesIn}.*{quotesEnd}
+equals          \=
+equality        \=\=
+inequality      \!\=
+lthan           \<
+gthan           \>
+plus            \+
+minus           \-
+multiply        \*
 divide          \/
+printf          "printf"
 strcpy          "strcpy"
+strcmp          "strcmp"
 gets            "gets"
 memcpy          "memcpy"
 void            "void"
 delim           [ \t\n]+
-commentLine     [ \/\/ ]+.*[\n]  
-initComment     [ \/\* ]+
-endComment      [ \*\/ ]+
-comment         {initComment}.*{endComment}
-word            [^ \t\n\r]+
+word            [a-zA-Z_][a-zA-Z0-9_]* 
 integer         [0-9]+
+commentLine     [\/\/]+.*  
+initComment     [\/\*]+
+endComment      [\*\/]+
+comment         {initComment}.*{endComment}
 
 /* Seccion de reglas*/
 %%
 ^#.*            ; 
-{delim}         ;
 {if}            { return IF; }
 {else}          { return ELSE; }
 {while}         { return WHILE; }
@@ -58,8 +64,11 @@ integer         [0-9]+
 {rbrace}        { return RBRACE; }
 {lparent}       { return LPAREN; }
 {rparent}       { return RPAREN; }
+{lbracket}      { return LBRACKET; }
+{rbracket}      { return RBRACKET; }
 {comma}         { return COMMA; }
 {semicolon}     { return SEMICOLON; }
+{quotedstring}  { return PRINTSTRING; }
 {equals}        { return EQUALS; }
 {equality}      { return EQUALITY; }
 {inequality}    { return INEQUALITY; }
@@ -69,14 +78,17 @@ integer         [0-9]+
 {minus}         { return MINUS; }
 {multiply}      { return MULTIPLY; }
 {divide}        { return DIVIDE; }
-{commentLine}   { return COMMENTLINE; }
-{comment}       { return COMMENT; }
+{printf}        { return PRINTF; }
 {strcpy}        { return STRCPY; }
+{strcmp}        { return STRCMP; }
 {gets}          { return GETS; }
 {memcpy}        { return MEMCPY; }
 {integer}       { yylval.str = strdup(yytext) ; 
                     return INTEGER; };
 {word}          { yylval.str = strdup(yytext); 
                     return WORD; }  
+{delim}         {}
+{commentLine}   { return COMMENTLINE; }
+{comment}       { return COMMENT; }
 .               { printf("Error en la linea %i: caracter invalido: %s\n", yylineno, yytext); }
 %%

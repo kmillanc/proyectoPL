@@ -3,13 +3,23 @@
 #include <stdlib.h>
 #include <string.h>
 
-int yylex(); 
+extern int yylex();
 int malicious_overwrite = 0;
 
 void yyerror(const char *s);
 
 extern int yylineno;
 extern void yyclearin;
+
+struct variable {
+   char *name;
+   int declarationLine;
+   int initializationLine;
+};
+
+struct variable variables[256];
+
+int variableCount = 0;
 
 %}
 
@@ -29,8 +39,11 @@ extern void yyclearin;
 %token RBRACE
 %token LPAREN
 %token RPAREN
+%token LBRACKET
+%token RBRACKET
 %token COMMA
 %token SEMICOLON
+%token PRINTSTRING
 %token EQUALS
 %token EQUALITY
 %token INEQUALITY
@@ -40,9 +53,11 @@ extern void yyclearin;
 %token MINUS
 %token MULTIPLY
 %token DIVIDE
+%token PRINTF
 %token COMMENTLINE
 %token COMMENT
 %token STRCPY
+%token STRCMP
 %token GETS
 %token MEMCPY
 
@@ -53,26 +68,34 @@ extern void yyclearin;
 
 %%
 
-program: statements
+program: statements 
 ;
 
 statements: statement
           | statements statement
+          | statements function
+;
+
+function: LBRACE statements RBRACE
 ;
 
 statement: 
-          expression SEMICOLON
-         | declaration SEMICOLON
-         | if_statement
-         | iteration_statement
+        PRINTF LPAREN parameter_declaration RPAREN SEMICOLON
+        | GETS LPAREN expression RPAREN SEMICOLON {printf("Malicious overwrite detected in line %i\n", yylineno); malicious_overwrite++;}
+        | expression SEMICOLON
+        | declaration SEMICOLON
+        | declaration
+        | if_statement
+        | iteration_statement
+        | COMMENTLINE
+        | COMMENT
 ;
 
-declaration: type declarator_list
+declaration: type declarator_list 
 ;
 
 type: INT
     | CHAR
-    | INTEGER
     | VOID
 ;
 
@@ -80,9 +103,21 @@ declarator_list: declarator
               | declarator_list COMMA declarator
 ;
 
-declarator: WORD
-          | WORD LPAREN RPAREN
-          | WORD LPAREN parameter_list RPAREN
+declarator: WORD { 
+                variables[variableCount].name = strdup($1);
+                variables[variableCount].declarationLine = yylineno;
+                variableCount++;}
+            | WORD EQUALS INTEGER {
+                variables[variableCount].name = strdup($1);
+                variables[variableCount].declarationLine = yylineno;
+                variables[variableCount].initializationLine = yylineno;
+                variableCount++;}
+            | WORD LPAREN RPAREN
+            | WORD LPAREN parameter_list RPAREN
+            | WORD LBRACKET INTEGER RBRACKET { 
+                variables[variableCount].name = strdup($1);
+                variables[variableCount].declarationLine = yylineno;
+                variableCount++;}
 ; 
 
 parameter_list: parameter_declaration
@@ -90,6 +125,7 @@ parameter_list: parameter_declaration
 ;
 
 parameter_declaration: type WORD
+                    | PRINTSTRING
 ;
 
 if_statement: IF LPAREN expression RPAREN LBRACE statement RBRACE
@@ -116,8 +152,13 @@ expression: WORD
 %%
 
 int main(int argc, char *argv[]) {
+    
 	yyparse(); 
-     printf("Malicious overwrites detected: %i\n", malicious_overwrite);
+    printf("Malicious overwrites detected: %i\n", malicious_overwrite);
+    printf("Variables:\n");
+    for (int i = 0; i < variableCount; i++) {
+        printf("Name: %s, Declaration line: %i, Initialization line: %i\n", variables[i].name, variables[i].declarationLine, variables[i].initializationLine);
+    }
 	return 0;
 }
 

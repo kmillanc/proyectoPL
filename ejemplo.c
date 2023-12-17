@@ -1,30 +1,19 @@
-#include <stdio.h>
 #include <string.h>
 
-int main()
-{
-    char password[16];
-    int passcheck = 0;
+void myfunction (char *str) {
+    char buffer[16];
+    strcpy(buffer, str);        //copiamos el contenido de str en buffer[16] sin comprobar que el tamaño de str sea menor que 16!!
+}
 
-    printf("\n Enter the password : \n");
-    gets(password); //gets no comprueba que lo que escribamos por teclado tenga como máximo 16 caracteres
+int main () {
+    char large_string[256];
+    int i;
 
-    if(strcmp(password, "password1"))
-    {
-        printf ("\n Wrong Password \n");
-    }
-    else
-    {
-        printf ("\n Correct Password \n");
-        passcheck = 1;
+    for (i = 0; i < 255; i++) {
+        large_string[i] = 'A';
     }
 
-    if(passcheck)
-    {
-       /* Now Give root or admin rights to user*/
-        printf ("\n Root privileges given to the user \n");
-        system("cat /etc/shadow\n");
-    }
-
+    large_string[255] = '\0';
+    myfunction(large_string);   //llamamos a la función myfunction con el argumento large_string, este sobreescribira buffer[16]
     return 0;
 }
