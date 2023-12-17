@@ -17,13 +17,11 @@ extern void yyclearin;
     char *str;
 }
 
-%token HEADER_INCLUDE
-%token STRCPY
-%token GETS
-%token MEMCPY
-%token INT
-%token CHAR
-
+%token <str> STRCPY
+%token <str> GETS
+%token <str> MEMCPY
+%token <str> INT
+%token <str> CHAR
 %token <str> WORD
 %token <str> ANY
 
