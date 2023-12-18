@@ -1,7 +1,11 @@
 %{
+// ---------------------------- Librerias -------------------------------
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+// ---------------------------- Definiciones -----------------------------
 
 extern int yylex();
 int malicious_overwrite = 0;
@@ -26,6 +30,8 @@ int variableCount = 0;
 %union {
     char *str;
 }
+
+// ---------------------------- Simbolos terminales --------------------------
 
 %token IF
 %token ELSE
@@ -65,9 +71,13 @@ int variableCount = 0;
 %token <str> INTEGER
 %token <str> WORD
 
+// ---------------------------- Inicio de la gramatica -------------------------
+
 %start program
 
 %%
+
+// ---------------------------- Reglas gramaticales ----------------------------
 
 program: statements 
 ;
@@ -95,6 +105,24 @@ statement:
         | COMMENTLINE
         | COMMENT
 ;
+
+// ---------------------------- Expresiones ----------------------------
+
+expression: WORD
+        | INTEGER
+        | expression EQUALS WORD
+        | expression EQUALS INTEGER
+        | expression EQUALITY WORD
+        | expression EQUALITY INTEGER
+        | expression INEQUALITY WORD
+        | expression INEQUALITY INTEGER
+        | expression LTHAN WORD
+        | expression LTHAN INTEGER 
+        | expression GTHAN WORD
+        | expression GTHAN INTEGER
+;
+
+// ---------------------------- Declaraciones ----------------------------
 
 declaration: type declarator_list 
 ;
@@ -133,28 +161,21 @@ parameter_declaration: type WORD
                     | PRINTSTRING
 ;
 
+// ---------------------------- If-Then-Else ----------------------------
+
 if_statement: IF LPAREN expression RPAREN LBRACE statements RBRACE
             | IF LPAREN strcmp RPAREN LBRACE statements RBRACE ELSE
             | if_statement ELSE LBRACE statements RBRACE
 ;
 
+// ---------------------------- Bucles ----------------------------
+
 iteration_statement: WHILE LPAREN expression RPAREN statement
                     | FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statement
 ;
 
-expression: WORD
-        | INTEGER
-        | expression EQUALS WORD
-        | expression EQUALS INTEGER
-        | expression EQUALITY WORD
-        | expression EQUALITY INTEGER
-        | expression INEQUALITY WORD
-        | expression INEQUALITY INTEGER
-        | expression LTHAN WORD
-        | expression LTHAN INTEGER 
-        | expression GTHAN WORD
-        | expression GTHAN INTEGER
-;
+
+// ---------------------------- Funciones de C ----------------------------
 
 gets: 
     GETS LPAREN expression RPAREN 
@@ -177,13 +198,16 @@ return:
 
 %%
 
+// ---------------------------- Funciones ----------------------------
+
 int main(int argc, char *argv[]) {
     
 	yyparse(); 
     printf("Malicious overwrites detected: %i\n", malicious_overwrite);
     printf("Variables:\n");
     for (int i = 0; i < variableCount; i++) {
-        printf("Name: %s, Declaration line: %i, Initialization line: %i\n", variables[i].name, variables[i].declarationLine, variables[i].initializationLine);
+        printf("Name: %s, Declaration line: %i, Initialization line: %i\n", variables[i].name, 
+                variables[i].declarationLine, variables[i].initializationLine);
     }
 	return 0;
 }
