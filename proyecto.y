@@ -80,13 +80,14 @@ function: LBRACE statements RBRACE
 ;
 
 statement: 
-        PRINTF LPAREN parameter_declaration RPAREN SEMICOLON
-        | GETS LPAREN expression RPAREN SEMICOLON {printf("Malicious overwrite detected in line %i\n", yylineno); malicious_overwrite++;}
+        expression
         | expression SEMICOLON
-        | declaration SEMICOLON
         | declaration
+        | declaration SEMICOLON
         | if_statement
         | iteration_statement
+        | gets {printf("Malicious overwrite detected in line %i\n", yylineno); malicious_overwrite++;}
+        | PRINTF LPAREN parameter_declaration RPAREN SEMICOLON
         | COMMENTLINE
         | COMMENT
 ;
@@ -148,6 +149,12 @@ expression: WORD
          | expression GTHAN WORD
          | expression GTHAN INTEGER
 ;
+
+gets: 
+    GETS LPAREN expression RPAREN 
+    | gets SEMICOLON
+;
+
 
 %%
 
