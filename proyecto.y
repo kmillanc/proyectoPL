@@ -60,6 +60,7 @@ int variableCount = 0;
 %token STRCMP
 %token GETS
 %token MEMCPY
+%token SYSTEM
 
 %token <str> INTEGER
 %token <str> WORD
@@ -87,6 +88,9 @@ statement:
         | if_statement
         | iteration_statement
         | gets {printf("Malicious overwrite detected in line %i\n", yylineno); malicious_overwrite++;}
+        | strcmp 
+        | system
+        | return
         | PRINTF LPAREN parameter_declaration RPAREN SEMICOLON
         | COMMENTLINE
         | COMMENT
@@ -129,8 +133,9 @@ parameter_declaration: type WORD
                     | PRINTSTRING
 ;
 
-if_statement: IF LPAREN expression RPAREN LBRACE statement RBRACE
-               | if_statement ELSE LBRACE statement RBRACE
+if_statement: IF LPAREN expression RPAREN LBRACE statements RBRACE
+            | IF LPAREN strcmp RPAREN LBRACE statements RBRACE ELSE
+            | if_statement ELSE LBRACE statements RBRACE
 ;
 
 iteration_statement: WHILE LPAREN expression RPAREN statement
@@ -138,16 +143,17 @@ iteration_statement: WHILE LPAREN expression RPAREN statement
 ;
 
 expression: WORD
-         | expression EQUALS WORD
-         | expression EQUALS INTEGER
-         | expression EQUALITY WORD
-         | expression EQUALITY INTEGER
-         | expression INEQUALITY WORD
-         | expression INEQUALITY INTEGER
-         | expression LTHAN WORD
-         | expression LTHAN INTEGER 
-         | expression GTHAN WORD
-         | expression GTHAN INTEGER
+        | INTEGER
+        | expression EQUALS WORD
+        | expression EQUALS INTEGER
+        | expression EQUALITY WORD
+        | expression EQUALITY INTEGER
+        | expression INEQUALITY WORD
+        | expression INEQUALITY INTEGER
+        | expression LTHAN WORD
+        | expression LTHAN INTEGER 
+        | expression GTHAN WORD
+        | expression GTHAN INTEGER
 ;
 
 gets: 
@@ -155,6 +161,19 @@ gets:
     | gets SEMICOLON
 ;
 
+strcmp:
+    STRCMP LPAREN WORD COMMA PRINTSTRING RPAREN
+    | strcmp SEMICOLON
+;
+
+system: 
+    SYSTEM LPAREN PRINTSTRING RPAREN
+    | system SEMICOLON
+;
+
+return:
+    RETURN INTEGER 
+    | return SEMICOLON
 
 %%
 

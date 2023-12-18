@@ -14,6 +14,7 @@ while           "while"
 for             "for"
 int             "int"       
 char            "char"  
+void            "void"
 return          "return"
 lbrace          \{
 rbrace          \}
@@ -40,7 +41,7 @@ strcpy          "strcpy"
 strcmp          "strcmp"
 gets            "gets"
 memcpy          "memcpy"
-void            "void"
+system          "system"
 delim           [ \t\n]+
 word            [a-zA-Z_][a-zA-Z0-9_]* 
 integer         [0-9]+
@@ -83,6 +84,7 @@ comment         {initComment}.*{endComment}
 {strcmp}        { return STRCMP; }
 {gets}          { return GETS; }
 {memcpy}        { return MEMCPY; }
+{system}        { return SYSTEM; }
 {integer}       { yylval.str = strdup(yytext) ; 
                     return INTEGER; };
 {word}          { yylval.str = strdup(yytext); 
