@@ -33,6 +33,7 @@ inequality      \!\=
 lthan           \<
 gthan           \>
 plus            \+
+increment       {word}\+\+
 minus           \-
 multiply        \*
 divide          \/
@@ -77,6 +78,7 @@ comment         {initComment}.*{endComment}
 {lthan}         { return LTHAN; }
 {gthan}         { return GTHAN; }
 {plus}          { return PLUS; }
+{increment}     { return INCREMENT; }
 {minus}         { return MINUS; }
 {multiply}      { return MULTIPLY; }
 {divide}        { return DIVIDE; }

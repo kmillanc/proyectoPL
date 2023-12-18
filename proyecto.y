@@ -56,6 +56,7 @@ int variableCount = 0;
 %token LTHAN
 %token GTHAN   
 %token PLUS
+%token INCREMENT
 %token MINUS
 %token MULTIPLY
 %token DIVIDE
@@ -102,6 +103,7 @@ statement:
         | strcmp 
         | system
         | return
+        | strcpy
         | PRINTF LPAREN parameter_declaration RPAREN SEMICOLON
         | COMMENTLINE
         | COMMENT
@@ -112,6 +114,10 @@ statement:
 expression: WORD
         | INTEGER
         | POINTER 
+        | INCREMENT
+        | expression LBRACKET WORD RBRACKET 
+        | expression LBRACKET INTEGER RBRACKET 
+        | expression LPAREN WORD RPAREN
         | expression EQUALS WORD
         | expression EQUALS INTEGER
         | expression EQUALITY WORD
@@ -161,6 +167,8 @@ parameter_list: parameter_declaration
 ;
 
 parameter_declaration: type WORD
+
+                    | type POINTER
                     | PRINTSTRING
 ;
 
@@ -174,7 +182,7 @@ if_statement: IF LPAREN expression RPAREN LBRACE statements RBRACE
 // ---------------------------- Bucles ----------------------------
 
 iteration_statement: WHILE LPAREN expression RPAREN statement
-                    | FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statement
+                    | FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN function
 ;
 
 
@@ -198,6 +206,12 @@ system:
 return:
     RETURN INTEGER 
     | return SEMICOLON
+;
+
+strcpy:
+    STRCPY LPAREN WORD COMMA WORD RPAREN
+    | strcpy SEMICOLON
+;
 
 %%
 
