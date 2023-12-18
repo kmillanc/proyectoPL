@@ -67,6 +67,7 @@ int variableCount = 0;
 %token GETS
 %token MEMCPY
 %token SYSTEM
+%token POINTER
 
 %token <str> INTEGER
 %token <str> WORD
@@ -110,6 +111,7 @@ statement:
 
 expression: WORD
         | INTEGER
+        | POINTER 
         | expression EQUALS WORD
         | expression EQUALS INTEGER
         | expression EQUALITY WORD
@@ -151,6 +153,7 @@ declarator: WORD {
                 variables[variableCount].name = strdup($1);
                 variables[variableCount].declarationLine = yylineno;
                 variableCount++;}
+            | POINTER
 ; 
 
 parameter_list: parameter_declaration

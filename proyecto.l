@@ -45,6 +45,7 @@ system          "system"
 delim           [ \t\n]+
 word            [a-zA-Z_][a-zA-Z0-9_]* 
 integer         [0-9]+
+pointer         \*{word}
 commentLine     [\/\/]+.*  
 initComment     [\/\*]+
 endComment      [\*\/]+
@@ -89,6 +90,7 @@ comment         {initComment}.*{endComment}
                     return INTEGER; };
 {word}          { yylval.str = strdup(yytext); 
                     return WORD; }  
+{pointer}       { return POINTER; }
 {delim}         {}
 {commentLine}   { return COMMENTLINE; }
 {comment}       { return COMMENT; }
