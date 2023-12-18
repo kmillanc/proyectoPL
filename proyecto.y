@@ -56,7 +56,7 @@ int variableCount = 0;
 %token LTHAN
 %token GTHAN   
 %token PLUS
-%token INCREMENT
+%token <str> INCREMENT
 %token MINUS
 %token MULTIPLY
 %token DIVIDE
@@ -68,11 +68,12 @@ int variableCount = 0;
 %token GETS
 %token MEMCPY
 %token SYSTEM
-%token POINTER
+%token <str> POINTER
 
 %token <str> INTEGER
 %token <str> WORD
 
+%type <str> expression
 // ---------------------------- Inicio de la gramatica -------------------------
 
 %start program
@@ -99,7 +100,7 @@ statement:
         | declaration SEMICOLON
         | if_statement
         | iteration_statement
-        | gets {printf("Malicious overwrite detected in line %i\n", yylineno); malicious_overwrite++;}
+        | gets
         | strcmp 
         | system
         | return
@@ -189,7 +190,7 @@ iteration_statement: WHILE LPAREN expression RPAREN statement
 // ---------------------------- Funciones de C ----------------------------
 
 gets: 
-    GETS LPAREN expression RPAREN 
+    GETS LPAREN expression RPAREN {printf("Malicious overwrite detected in line %i over variable: %s\n", yylineno, strdup($3)); malicious_overwrite++;}
     | gets SEMICOLON
 ;
 
@@ -209,7 +210,7 @@ return:
 ;
 
 strcpy:
-    STRCPY LPAREN WORD COMMA WORD RPAREN
+    STRCPY LPAREN WORD COMMA WORD RPAREN {printf("Malicious overwrite detected in line %i over variable: %s\n", yylineno, strdup($3)); malicious_overwrite++;}
     | strcpy SEMICOLON
 ;
 
@@ -222,9 +223,12 @@ int main(int argc, char *argv[]) {
 	yyparse(); 
     printf("Malicious overwrites detected: %i\n", malicious_overwrite);
     printf("Variables:\n");
+    printf("|    Name    | Declaration Line | Initialization Line |\n");
+        printf("|------------|------------------|---------------------|\n");
     for (int i = 0; i < variableCount; i++) {
-        printf("Name: %s, Declaration line: %i, Initialization line: %i\n", variables[i].name, 
-                variables[i].declarationLine, variables[i].initializationLine);
+        //Make a table with the variables and its fields. | Name | Declaration Line | Initialization Line |
+        printf("| %10s | %16i | %19i |\n", variables[i].name, variables[i].declarationLine, variables[i].initializationLine);
+        
     }
 	return 0;
 }

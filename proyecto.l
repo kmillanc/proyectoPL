@@ -48,9 +48,9 @@ word            [a-zA-Z_][a-zA-Z0-9_]*
 integer         [0-9]+
 pointer         \*{word}
 commentLine     [\/\/]+.*  
-initComment     [\/\*]+
-endComment      [\*\/]+
-comment         {initComment}.*{endComment}
+initComment     \/\*
+endComment      \*\/
+comment         {initComment}+.*{endComment}+
 
 /* Seccion de reglas*/
 %%

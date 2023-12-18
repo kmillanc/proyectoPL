@@ -1,19 +1,24 @@
-#include <string.h>
+#include <stdio.h>
 
-void myfunction (char *str) {
-    char buffer[16];
-    strcpy(buffer, str);        //copiamos el contenido de str en buffer[16] sin comprobar que el tamaño de str sea menor que 16!!
+void myfunction (int a, int b, int c) {
+    char buffer1[8];
+    char buffer2[12];
+    int *retp;          //ret es un puntero a entero
+
+    retp = (int *)buffer1 +4;  //pointer arithmetic, retp apunta a buffer1[4] (buffer1[0] + 4*sizeof(int))
+    (*retp) += 7;       //sumamos 7 a lo que apunta retp
+    printf("Old retp value = %x\n", *retp);
+    (*retp) += 7;       //sumamos 7 a lo que apunta retp
+    printf("New retp value = %x\n", *retp);
 }
 
 int main () {
-    char large_string[256];
-    int i;
+    int x;
 
-    for (i = 0; i < 255; i++) {
-        large_string[i] = 'A';
-    }
+    x = 0;
+    myfunction(1,2,3);
+    x = 1;
 
-    large_string[255] = '\0';
-    myfunction(large_string);   //llamamos a la función myfunction con el argumento large_string, este sobreescribira buffer[16]
+    printf("%x\n",x);  //imprimimos el valor de x en hexadecimal
     return 0;
 }
