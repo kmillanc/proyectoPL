@@ -45,10 +45,10 @@ delim           [ \t\n]+
 word            [a-zA-Z_][a-zA-Z0-9_]* 
 integer         [0-9]+
 pointer         \*{word}+
-commentLine     [\/\/]+.*  
+commentLine     \/\/.*  
 initComment     \/\*
 endComment      \*\/
-comment         {initComment}+.*{endComment}+
+comment         {initComment}.*{endComment}
 
 /* Seccion de reglas*/
 %%

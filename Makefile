@@ -17,7 +17,7 @@ compile:
 
 compile2:
 	flex -d $(FUENTE).l
-	bison -d -t -o $(FUENTE).tab.c $(FUENTE).y -yd -Wcounterexamples
+	bison -d -t -r all -o $(FUENTE).tab.c $(FUENTE).y -yd -Wcounterexamples
 	gcc -o $(FUENTE) proyecto.tab.c lex.yy.c -$(LIB) -DDEBUG
 
 clean:

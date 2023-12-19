@@ -43,7 +43,7 @@ int variableCount = 0;
 %token RETURN
 %token LBRACE
 %token RBRACE
-%token LPAREN
+%token <str> LPAREN
 %token RPAREN
 %token LBRACKET
 %token RBRACKET
@@ -112,18 +112,20 @@ statement:
 
 // ---------------------------- Expresiones ----------------------------
 
-operador: PLUS
+operador: PLUS EQUALS
         | MINUS
+        | PLUS 
 ;
 
+// (*retp) += 7;
 expression: WORD
         | INTEGER
         | POINTER 
         | INCREMENT
-        | LPAREN POINTER WORD RPAREN
         | expression LBRACKET WORD RBRACKET 
-        | expression LBRACKET INTEGER RBRACKET 
+        | expression indexArray 
         | expression LPAREN WORD RPAREN
+        | expression LPAREN WORD indexArray RPAREN
         | expression EQUALS WORD
         | expression EQUALS cast
         | expression EQUALS INTEGER
@@ -136,6 +138,9 @@ expression: WORD
         | expression LTHAN INTEGER 
         | expression GTHAN WORD
         | expression GTHAN INTEGER
+;
+
+indexArray: LBRACKET INTEGER RBRACKET
 ;
 
 // ---------------------------- Declaraciones ----------------------------
@@ -163,11 +168,11 @@ declarator: WORD {
                 variableCount++;}
             | WORD LPAREN RPAREN
             | WORD LPAREN parameter_list RPAREN
-            | WORD LBRACKET INTEGER RBRACKET { 
+            | WORD indexArray { 
                 variables[variableCount].name = strdup($1);
                 variables[variableCount].declarationLine = yylineno;
                 variableCount++;}
-            | POINTER
+            | POINTER LBRACKET RBRACKET
 ; 
 
 parameter_list: parameter_declaration
@@ -175,8 +180,8 @@ parameter_list: parameter_declaration
 ;
 
 parameter_declaration: type WORD
-
                     | type POINTER
+                    | type POINTER LBRACKET RBRACKET
                     | PRINTSTRING
 ;
 
