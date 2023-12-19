@@ -35,8 +35,6 @@ gthan           \>
 plus            \+
 increment       {word}\+\+
 minus           \-
-multiply        \*
-divide          \/
 printf          "printf"
 strcpy          "strcpy"
 strcmp          "strcmp"
@@ -46,7 +44,7 @@ system          "system"
 delim           [ \t\n]+
 word            [a-zA-Z_][a-zA-Z0-9_]* 
 integer         [0-9]+
-pointer         \*{word}
+pointer         \*{word}+
 commentLine     [\/\/]+.*  
 initComment     \/\*
 endComment      \*\/
@@ -80,8 +78,6 @@ comment         {initComment}+.*{endComment}+
 {plus}          { return PLUS; }
 {increment}     { return INCREMENT; }
 {minus}         { return MINUS; }
-{multiply}      { return MULTIPLY; }
-{divide}        { return DIVIDE; }
 {printf}        { return PRINTF; }
 {strcpy}        { return STRCPY; }
 {strcmp}        { return STRCMP; }

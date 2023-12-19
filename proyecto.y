@@ -112,15 +112,22 @@ statement:
 
 // ---------------------------- Expresiones ----------------------------
 
+operador: PLUS
+        | MINUS
+;
+
 expression: WORD
         | INTEGER
         | POINTER 
         | INCREMENT
+        | LPAREN POINTER WORD RPAREN
         | expression LBRACKET WORD RBRACKET 
         | expression LBRACKET INTEGER RBRACKET 
         | expression LPAREN WORD RPAREN
         | expression EQUALS WORD
+        | expression EQUALS cast
         | expression EQUALS INTEGER
+        | expression operador INTEGER
         | expression EQUALITY WORD
         | expression EQUALITY INTEGER
         | expression INEQUALITY WORD
@@ -212,6 +219,11 @@ return:
 strcpy:
     STRCPY LPAREN WORD COMMA WORD RPAREN {printf("Malicious overwrite detected in line %i over variable: %s\n", yylineno, strdup($3)); malicious_overwrite++;}
     | strcpy SEMICOLON
+;
+
+cast: 
+    LPAREN type RPAREN
+    | LPAREN type POINTER RPAREN
 ;
 
 %%
