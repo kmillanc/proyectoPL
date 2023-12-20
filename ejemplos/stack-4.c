@@ -5,7 +5,7 @@ void callme (char *filename){
     char b[256];
     FILE* f;
 
-    f = fopen ( filename, ”r”) ;
+    f = fopen ( filename, "r");
     fgets (b, 512, f);
 }
 

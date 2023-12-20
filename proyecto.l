@@ -39,8 +39,9 @@ printf          "printf"
 strcpy          "strcpy"
 strcmp          "strcmp"
 gets            "gets"
-memcpy          "memcpy"
 system          "system"
+fopen           "fopen"
+fgets           "fgets"
 delim           [ \t\n]+
 word            [a-zA-Z_][a-zA-Z0-9_]* 
 integer         [0-9]+
@@ -82,8 +83,9 @@ comment         {initComment}.*{endComment}
 {strcpy}        { return STRCPY; }
 {strcmp}        { return STRCMP; }
 {gets}          { return GETS; }
-{memcpy}        { return MEMCPY; }
 {system}        { return SYSTEM; }
+{fopen}         { return FOPEN; }
+{fgets}         { return FGETS; }
 {integer}       { yylval.str = strdup(yytext) ; 
                     return INTEGER; };
 {word}          { yylval.str = strdup(yytext); 

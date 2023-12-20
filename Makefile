@@ -21,7 +21,7 @@ compile2:
 	gcc -o $(FUENTE) proyecto.tab.c lex.yy.c -$(LIB) -DDEBUG
 
 clean:
-	rm $(FUENTE) lex.yy.c $(FUENTE).tab.c $(FUENTE).tab.h $(SALIDA)
+	rm $(FUENTE) lex.yy.c $(FUENTE).tab.c $(FUENTE).tab.h $(SALIDA) $(FUENTE).output
 
 run:
 	./$(FUENTE) < $(PRUEBA) > scan.txt

@@ -43,8 +43,6 @@ int variableCount = 0;
 %token RETURN
 %token LBRACE
 %token RBRACE
-%token <str> LPAREN
-%token RPAREN
 %token LBRACKET
 %token RBRACKET
 %token COMMA
@@ -56,18 +54,20 @@ int variableCount = 0;
 %token LTHAN
 %token GTHAN   
 %token PLUS
-%token <str> INCREMENT
 %token MINUS
-%token MULTIPLY
-%token DIVIDE
 %token PRINTF
 %token COMMENTLINE
 %token COMMENT
 %token STRCPY
 %token STRCMP
 %token GETS
-%token MEMCPY
 %token SYSTEM
+%token FOPEN
+%token FGETS
+
+%token <str> LPAREN
+%token <str> RPAREN
+%token <str> INCREMENT
 %token <str> POINTER
 
 %token <str> INTEGER
@@ -105,7 +105,8 @@ statement:
         | system
         | return
         | strcpy
-        | PRINTF LPAREN parameter_declaration RPAREN SEMICOLON
+        | printf
+        | fgets
         | COMMENTLINE
         | COMMENT
 ;
@@ -115,29 +116,29 @@ statement:
 operador: PLUS EQUALS
         | MINUS
         | PLUS 
+        | EQUALS
+        | EQUALITY
+        | INEQUALITY
+        | LTHAN
+        | GTHAN
 ;
 
-// (*retp) += 7;
 expression: WORD
         | INTEGER
         | POINTER 
         | INCREMENT
         | expression LBRACKET WORD RBRACKET 
         | expression indexArray 
-        | expression LPAREN WORD RPAREN
-        | expression LPAREN WORD indexArray RPAREN
-        | expression EQUALS WORD
-        | expression EQUALS cast
-        | expression EQUALS INTEGER
+        | expression LPAREN expression_list RPAREN
+        | expression operador WORD
         | expression operador INTEGER
-        | expression EQUALITY WORD
-        | expression EQUALITY INTEGER
-        | expression INEQUALITY WORD
-        | expression INEQUALITY INTEGER
-        | expression LTHAN WORD
-        | expression LTHAN INTEGER 
-        | expression GTHAN WORD
-        | expression GTHAN INTEGER
+        | expression operador cast
+        | expression operador fopen
+;
+
+expression_list:
+        expression
+        | expression_list COMMA expression
 ;
 
 indexArray: LBRACKET INTEGER RBRACKET
@@ -161,7 +162,7 @@ declarator: WORD {
                 variables[variableCount].name = strdup($1);
                 variables[variableCount].declarationLine = yylineno;
                 variableCount++;}
-            | WORD EQUALS INTEGER {
+            | WORD operador INTEGER {
                 variables[variableCount].name = strdup($1);
                 variables[variableCount].declarationLine = yylineno;
                 variables[variableCount].initializationLine = yylineno;
@@ -172,6 +173,7 @@ declarator: WORD {
                 variables[variableCount].name = strdup($1);
                 variables[variableCount].declarationLine = yylineno;
                 variableCount++;}
+            | POINTER 
             | POINTER LBRACKET RBRACKET
 ; 
 
@@ -182,7 +184,6 @@ parameter_list: parameter_declaration
 parameter_declaration: type WORD
                     | type POINTER
                     | type POINTER LBRACKET RBRACKET
-                    | PRINTSTRING
 ;
 
 // ---------------------------- If-Then-Else ----------------------------
@@ -230,6 +231,21 @@ cast:
     LPAREN type RPAREN
     | LPAREN type POINTER RPAREN
 ;
+
+printf: 
+    PRINTF LPAREN PRINTSTRING RPAREN SEMICOLON
+    | PRINTF LPAREN PRINTSTRING COMMA expression RPAREN SEMICOLON
+;
+
+fopen:
+    FOPEN LPAREN WORD COMMA PRINTSTRING RPAREN
+;
+
+fgets:
+    FGETS LPAREN WORD COMMA INTEGER COMMA WORD RPAREN
+    | fgets SEMICOLON
+;
+
 
 %%
 
