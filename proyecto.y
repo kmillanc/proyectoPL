@@ -8,12 +8,13 @@
 // ---------------------------- Definiciones -----------------------------
 
 extern int yylex();
-int malicious_overwrite = 0;
 
-void yyerror(const char *s);
+void yyerror(char *s);
 
 extern int yylineno;
 extern void yyclearin;
+
+// ------------------------- Variables globales ---------------------------
 
 struct variable {
    char *name;
@@ -24,6 +25,7 @@ struct variable {
 struct variable variables[256];
 
 int variableCount = 0;
+int malicious_overwrite = 0;
 
 %}
 
@@ -74,6 +76,7 @@ int variableCount = 0;
 %token <str> WORD
 
 %type <str> expression
+
 // ---------------------------- Inicio de la gramatica -------------------------
 
 %start program
@@ -251,21 +254,50 @@ fgets:
 
 // ---------------------------- Funciones ----------------------------
 
-int main(int argc, char *argv[]) {
+void yyerror (char *s) { 
     
-	yyparse(); 
-    printf("Malicious overwrites detected: %i\n", malicious_overwrite);
-    printf("Variables:\n");
-    printf("|    Name    | Declaration Line | Initialization Line |\n");
-        printf("|------------|------------------|---------------------|\n");
-    for (int i = 0; i < variableCount; i++) {
-        //Make a table with the variables and its fields. | Name | Declaration Line | Initialization Line |
-        printf("| %10s | %16i | %19i |\n", variables[i].name, variables[i].declarationLine, variables[i].initializationLine);
-        
-    }
-	return 0;
+    fprintf(stderr, "Error en la línea %i: %s\n", yylineno, s);
+
+    yyclearin;
+	exit(0);
 }
 
-void yyerror (const char *s) { 
-     fprintf(stderr, "Error en la línea %i: %s\n", yylineno, s);
+int main(int argc, char *argv[]) {
+    
+    extern FILE *yyin;
+
+    switch (argc) {
+        case 1: yyin=stdin;
+            yyparse();
+            printf("Malicious overwrites detected: %i\n", malicious_overwrite);
+            printf("Variables:\n");
+            printf("|    Name    | Declaration Line | Initialization Line |\n");
+            printf("|------------|------------------|---------------------|\n");
+            for (int i = 0; i < variableCount; i++) {
+                //Make a table with the variables and its fields. | Name | Declaration Line | Initialization Line |
+                printf("| %10s | %16i | %19i |\n", variables[i].name, variables[i].declarationLine, variables[i].initializationLine);
+        
+            }
+            break;
+        case 2: yyin = fopen(argv[1], "r");
+            if (yyin == NULL) {
+                printf("ERROR: No se ha podido abrir el fichero.\n");
+            }
+            else {
+                yyparse(); 
+                printf("Malicious overwrites detected: %i\n", malicious_overwrite);
+                printf("Variables:\n");
+                printf("|    Name    | Declaration Line | Initialization Line |\n");
+                printf("|------------|------------------|---------------------|\n");
+                for (int i = 0; i < variableCount; i++) {
+                    //Make a table with the variables and its fields. | Name | Declaration Line | Initialization Line |
+                    printf("| %10s | %16i | %19i |\n", variables[i].name, variables[i].declarationLine, variables[i].initializationLine);
+        
+                }
+                fclose(yyin);
+            }
+            break;
+        default: printf("ERROR: Demasiados argumentos.\nSintaxis: %s [fichero_entrada]\n\n", argv[0]);
+    }
+	return 0;
 }

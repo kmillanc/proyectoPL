@@ -24,4 +24,7 @@ clean:
 	rm $(FUENTE) lex.yy.c $(FUENTE).tab.c $(FUENTE).tab.h $(SALIDA) $(FUENTE).output
 
 run:
-	./$(FUENTE) < $(PRUEBA) > scan.txt
+	./$(FUENTE) < ejemplos/$(PRUEBA) > scan.txt
+
+run2: 
+	./$(FUENTE) ejemplos/$(PRUEBA)
