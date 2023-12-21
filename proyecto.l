@@ -24,9 +24,10 @@ lbracket        \[
 rbracket        \]
 comma           \,
 semicolon       \;
+singlequot      \'
 quotesIn        \"
 quotesEnd       \"
-quotedstring    {quotesIn}.*{quotesEnd}
+quotedstring    ({quotesIn}.*{quotesEnd})|({singlequot}.*{singlequot})
 equals          \=
 equality        \=\=
 inequality      \!\=
@@ -45,7 +46,7 @@ fgets           "fgets"
 delim           [ \t\n]+
 word            [a-zA-Z_][a-zA-Z0-9_]* 
 integer         [0-9]+
-pointer         \*{word}+
+pointer         \*{word}*
 commentLine     \/\/.*  
 initComment     \/\*
 endComment      \*\/

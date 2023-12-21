@@ -135,6 +135,7 @@ expression: WORD
         | expression LPAREN expression_list RPAREN
         | expression operador WORD
         | expression operador INTEGER
+        | expression operador PRINTSTRING
         | expression operador cast
         | expression operador fopen
 ;
@@ -255,11 +256,20 @@ fgets:
 // ---------------------------- Funciones ----------------------------
 
 void yyerror (char *s) { 
-    
     fprintf(stderr, "Error en la línea %i: %s\n", yylineno, s);
-
     yyclearin;
 	exit(0);
+}
+
+void print(){
+    printf("Malicious overwrites detected: %i\n", malicious_overwrite);
+        printf("Variables:\n");
+        printf("|    Name    | Declaration Line | Initialization Line |\n");
+        printf("|------------|------------------|---------------------|\n");
+        for (int i = 0; i < variableCount; i++) {
+            //Make a table with the variables and its fields. | Name | Declaration Line | Initialization Line |
+            printf("| %10s | %16i | %19i |\n", variables[i].name, variables[i].declarationLine, variables[i].initializationLine);
+        }
 }
 
 int main(int argc, char *argv[]) {
@@ -269,15 +279,7 @@ int main(int argc, char *argv[]) {
     switch (argc) {
         case 1: yyin=stdin;
             yyparse();
-            printf("Malicious overwrites detected: %i\n", malicious_overwrite);
-            printf("Variables:\n");
-            printf("|    Name    | Declaration Line | Initialization Line |\n");
-            printf("|------------|------------------|---------------------|\n");
-            for (int i = 0; i < variableCount; i++) {
-                //Make a table with the variables and its fields. | Name | Declaration Line | Initialization Line |
-                printf("| %10s | %16i | %19i |\n", variables[i].name, variables[i].declarationLine, variables[i].initializationLine);
-        
-            }
+            print();
             break;
         case 2: yyin = fopen(argv[1], "r");
             if (yyin == NULL) {
@@ -285,15 +287,7 @@ int main(int argc, char *argv[]) {
             }
             else {
                 yyparse(); 
-                printf("Malicious overwrites detected: %i\n", malicious_overwrite);
-                printf("Variables:\n");
-                printf("|    Name    | Declaration Line | Initialization Line |\n");
-                printf("|------------|------------------|---------------------|\n");
-                for (int i = 0; i < variableCount; i++) {
-                    //Make a table with the variables and its fields. | Name | Declaration Line | Initialization Line |
-                    printf("| %10s | %16i | %19i |\n", variables[i].name, variables[i].declarationLine, variables[i].initializationLine);
-        
-                }
+                print();
                 fclose(yyin);
             }
             break;

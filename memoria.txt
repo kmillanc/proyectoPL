@@ -26,3 +26,9 @@ debidos a un posible ataque, y una carpeta con distintos ejemplos de prueba con 
 también un Makefile para facilitar la ejecución de nuestro programa desde terminal donde bastaría con ejecutar un 
 make all para compilar el proyecto, un make run para ejecutarlo y un make clear para borrar todos los archivos 
 generados en compilación.
+
+Descripción del analizador léxico:
+
+Descripción del analizador sintáctico:
+
+Tratamiento de errores:
