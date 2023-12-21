@@ -207,7 +207,7 @@ iteration_statement: WHILE LPAREN expression RPAREN statement
 // ---------------------------- Funciones de C ----------------------------
 
 gets: 
-    GETS LPAREN expression RPAREN {printf("Malicious overwrite detected in line %i over variable: %s\n", yylineno, strdup($3)); malicious_overwrite++;}
+    GETS LPAREN expression RPAREN   { yyerror (strdup($3)); }
     | gets SEMICOLON
 ;
 
@@ -227,8 +227,8 @@ return:
 ;
 
 strcpy:
-    STRCPY LPAREN WORD COMMA WORD RPAREN {printf("Malicious overwrite detected in line %i over variable: %s\n", yylineno, strdup($3)); malicious_overwrite++;}
-    | strcpy SEMICOLON
+    STRCPY LPAREN WORD COMMA WORD RPAREN    { yyerror (strdup($3)); }
+    | strcpy SEMICOLON                      
 ;
 
 cast: 
@@ -242,12 +242,12 @@ printf:
 ;
 
 fopen:
-    FOPEN LPAREN WORD COMMA PRINTSTRING RPAREN
+    FOPEN LPAREN WORD COMMA PRINTSTRING RPAREN          { yyerror (strdup($3));  }
 ;
 
 fgets:
-    FGETS LPAREN WORD COMMA INTEGER COMMA WORD RPAREN
-    | fgets SEMICOLON
+    FGETS LPAREN WORD COMMA INTEGER COMMA WORD RPAREN   { yyerror (strdup($3)); }
+    | fgets SEMICOLON                                   
 ;
 
 
@@ -256,9 +256,9 @@ fgets:
 // ---------------------------- Funciones ----------------------------
 
 void yyerror (char *s) { 
-    fprintf(stderr, "Error en la línea %i: %s\n", yylineno, s);
+    fprintf(stderr, "Malicious overwrite detected in line %i over variable: %s\n", yylineno, s);
+    malicious_overwrite++;
     yyclearin;
-	exit(0);
 }
 
 void print(){
