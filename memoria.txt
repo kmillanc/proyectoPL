@@ -1,23 +1,15 @@
 /*****************************************************************************************************************
-
-- GUIÓN:
-Este fichero de explicación deberá especificar el nombre de los miembros del grupo o del
-estudiante (si el proyecto es individual), los objetivos de la práctica, los ficheros que la
-componen, las instrucciones de compilación/ejecución, descripción del analizador léxico y
-sintáctico, tratamiento de errores, y cualquier otra aclaración o comentario que se considere
-necesario (detalles sobre la gramática, problemas encontrados, etc.).
-
-*****************************************************************************************************************/
-
 Proyecto final - Procesamiento de lenguajes 
 Aut@r: Kevin Millán Canchapoma - k.millanc@udc.es
 Aut@r: Inés Faro Pérez - ines.fperez@udc.es
+*****************************************************************************************************************/
 
 En este proyecto proponemos la implementación de un analizador léxico y sintáctico que detecte posibles ataques de 
 buffer overflow. Como entrada recibimos un fichero .c y como salida devolvemos un informe que resalte las lineas y 
-las variables que son sobrescritas de manera fraudulenta. Las gramáticas recogerán todas las formas que nuestras 
-variables pueden ser sobrescritas. Junto a otro módulo final que cuenta con un contador podremos diferenciar entre  
-una sobreescritura maliciosa de una correcta.
+las variables que pueden ser sobrescritas de manera fraudulenta. Las gramáticas recogerán todas las formas que nuestras 
+variables pueden ser sobrescritas. Junto a otro módulo final que cuenta con un contador donde se muestra las posibles 
+sobreescrituras maliciosas y una tabla donde indicamos la variable, la linea donde se declara y la linea donde se
+inicializa.
 
 Los ficheros que componen este proyecto serán un analizador léxico (lexer) que nombramos como "proyecto.l ".
 El lexer reconocerá las variables inicializadas y las funciones como strcpy, gets, memcpy...
@@ -25,10 +17,18 @@ Tendremos también un analizador sintáctico (parser) "proyecto.y" que reconocer
 debidos a un posible ataque, y una carpeta con distintos ejemplos de prueba con ataques de buffer overflow. Tenemos 
 también un Makefile para facilitar la ejecución de nuestro programa desde terminal donde bastaría con ejecutar un 
 make all para compilar el proyecto, un make run para ejecutarlo y un make clear para borrar todos los archivos 
-generados en compilación.
+generados en compilación. Para un análisis más detallado podremos ejecutar make compile2, y make run2 para ejecutar 
+directamente los ejemplos que se encuentran en la carpeta llamada 'ejemplos'.
 
-Descripción del analizador léxico:
+En nuestro analizador léxico contemplamos ciertas palabras reservadas de C centrándonos en funciones vulnerables a ataques
+de buffer overflow. Para cualquier caracter no reconocido lanzamos un mensaje de error de caracter inválido.
 
-Descripción del analizador sintáctico:
+En el caso del analizador sintáctico, contemplamos algunas estructuras concretas del lenguaje C, pero solo aquellas 
+necesarias para nuestros ejemplos concretos de ataques de buffer overflow. Reconocemos estructuras básicas como 
+declaraciones, expresiones, estructuras condicionales como if then else o bucles como while y for. 
 
-Tratamiento de errores:
+El tratamiento de errores lo realizamos mediante la función de bison yyerror que la lanzamos cada vez que puede haber
+una sobreescritura maliciosa o en el caso de que el fichero de entrada no sea correcto.
+
+Finalmente, tenemos una función auxiliar print para darle un formato más visual a nuestra tabla mostrada en la salida.
+
